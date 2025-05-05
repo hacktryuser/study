@@ -1,0 +1,1037 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Hotel Billing System</title>
+    <style>
+        /* Basic CSS Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background-color: #f3f4f6;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background-color: #1e40af;
+            color: white;
+            padding: 15px 20px;
+        }
+
+        .header h1 {
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
+
+        .header p {
+            color: #bfdbfe;
+            font-size: 14px;
+        }
+
+        .content {
+            display: flex;
+            flex-direction: column;
+        }
+
+        @media (min-width: 768px) {
+            .content {
+                flex-direction: row;
+            }
+        }
+
+        .form-section {
+            flex: 1;
+            padding: 20px;
+            border-right: 1px solid #e5e7eb;
+            min-width: 300px;
+        }
+
+        .preview-section {
+            flex: 1;
+            padding: 20px;
+            background-color: #f9fafb;
+            min-width: 300px;
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .field-group {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 10px;
+        }
+
+        @media (min-width: 640px) {
+            .field-group {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        .field {
+            margin-bottom: 10px;
+        }
+
+        label {
+            display: block;
+            font-size: 14px;
+            font-weight: 500;
+            color: #374151;
+            margin-bottom: 5px;
+        }
+
+        input,
+        select {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        input:focus,
+        select:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.3);
+        }
+
+        input[readonly] {
+            background-color: #f3f4f6;
+        }
+
+        .item-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            background-color: #f9fafb;
+            padding: 12px;
+            border-radius: 4px;
+            margin-bottom: 12px;
+        }
+
+        .item-name {
+            flex: 1;
+        }
+
+        .item-qty,
+        .item-price,
+        .item-amount {
+            width: 100px;
+        }
+
+        .button-group {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        button {
+            display: inline-flex;
+            align-items: center;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        button.primary {
+            background-color: #16a34a;
+            color: white;
+        }
+
+        button.primary:hover {
+            background-color: #15803d;
+        }
+
+        button.secondary {
+            background-color: #3b82f6;
+            color: white;
+        }
+
+        button.secondary:hover {
+            background-color: #2563eb;
+        }
+
+        button.outline {
+            background-color: white;
+            color: #4b5563;
+            border: 1px solid #d1d5db;
+        }
+
+        button.outline:hover {
+            background-color: #f9fafb;
+        }
+
+        button.delete {
+            background-color: #ef4444;
+            color: white;
+            padding: 4px 8px;
+        }
+
+        button.delete:hover {
+            background-color: #dc2626;
+        }
+
+        button svg {
+            width: 18px;
+            height: 18px;
+            margin-right: 6px;
+        }
+
+        /* Receipt Preview Styles */
+        .receipt-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .receipt-date {
+            background-color: #dbeafe;
+            color: #1e40af;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            white-space: nowrap;
+        }
+
+        .receipt-preview {
+            background-color: white;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            padding: 16px;
+            font-family: monospace;
+            font-size: 14px;
+            line-height: 1.3;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            overflow-wrap: break-word;
+            word-wrap: break-word;
+        }
+
+        .receipt-header-content {
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .receipt-hotel-name {
+            font-size: 18px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .receipt-info-line {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 4px;
+        }
+
+        .receipt-section {
+            margin-bottom: 12px;
+        }
+
+        .receipt-divider {
+            border-top: 1px dashed #d1d5db;
+            margin: 8px 0;
+        }
+
+        .receipt-items-header {
+            display: grid;
+            grid-template-columns: 5fr 2fr 2fr 3fr;
+            font-weight: bold;
+            margin-bottom: 4px;
+        }
+
+        .receipt-items-header div:nth-child(1) {
+            text-align: left;
+        }
+
+        .receipt-items-header div:nth-child(2) {
+            text-align: center;
+        }
+
+        .receipt-items-header div:nth-child(3),
+        .receipt-items-header div:nth-child(4) {
+            text-align: right;
+        }
+
+        .receipt-item {
+            display: grid;
+            grid-template-columns: 5fr 2fr 2fr 3fr;
+            padding: 4px 0;
+        }
+
+        .receipt-item div:nth-child(1) {
+            text-align: left;
+            word-break: break-word;
+        }
+
+        .receipt-item div:nth-child(2) {
+            text-align: center;
+        }
+
+        .receipt-item div:nth-child(3),
+        .receipt-item div:nth-child(4) {
+            text-align: right;
+        }
+
+        .receipt-totals {
+            margin-top: 8px;
+        }
+
+        .receipt-grand-total {
+            font-weight: bold;
+            border-top: 1px double #d1d5db;
+            margin-top: 4px;
+            padding-top: 4px;
+        }
+
+        .receipt-footer {
+            text-align: center;
+            margin-top: 16px;
+            padding-top: 8px;
+            border-top: 1px dashed #d1d5db;
+            font-size: 12px;
+        }
+
+        /* Print styles */
+        @media print {
+            body {
+                margin: 0;
+                padding: 0;
+                background: white;
+            }
+
+            .container,
+            .header,
+            .form-section,
+            button {
+                display: none;
+            }
+
+            .receipt-preview {
+                width: 80mm;
+                margin: 0 auto;
+                border: none;
+                box-shadow: none;
+                padding: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Hotel Receipt Generator</h1>
+            <p>Create and print professional hotel bills</p>
+        </div>
+
+        <div class="content">
+            <!-- Left Panel - Form Controls -->
+            <div class="form-section">
+                <!-- Hotel Information Form -->
+                <div class="form-group">
+                    <h2 class="section-title">Hotel Information</h2>
+                    <div class="field-group">
+                        <div class="field">
+                            <label for="hotelName">Hotel Name</label>
+                            <input type="text" id="hotelName" value="Royal Palace Hotel" />
+                        </div>
+                        <div class="field">
+                            <label for="contactNumber">Contact Number</label>
+                            <input type="text" id="contactNumber" value="791209" />
+                        </div>
+                        <div class="field">
+                            <label for="addressLine1">Address Line 1</label>
+                            <input type="text" id="addressLine1" value="123 Luxury Avenue" />
+                        </div>
+                        <div class="field">
+                            <label for="addressLine2">Address Line 2</label>
+                            <input type="text" id="addressLine2" value="Golden District, Mumbai" />
+                        </div>
+                        <div class="field">
+                            <label for="gstNumber">GST Number</label>
+                            <input type="text" id="gstNumber" value="GST1234567890" />
+                        </div>
+                        <div class="field">
+                            <label for="receiptNumber">Receipt Number</label>
+                            <input type="text" id="receiptNumber" readonly />
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Customer Information Form -->
+                <div class="form-group">
+                    <h2 class="section-title">Customer Information</h2>
+                    <div class="field-group">
+                        <div class="field">
+                            <label for="customerName">Customer Name</label>
+                            <input type="text" id="customerName" />
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Items Form -->
+                <div class="form-group">
+                    <h2 class="section-title">Food & Services</h2>
+                    <div id="itemsList">
+                        <!-- Item rows will be added here -->
+                    </div>
+                    <button type="button" id="addItem" class="secondary">
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                        >
+                            <line x1="12" y1="5" x2="12" y2="19"></line>
+                            <line x1="5" y1="12" x2="19" y2="12"></line>
+                        </svg>
+                        Add Item
+                    </button>
+                </div>
+
+                <!-- Tax Form -->
+                <div class="form-group">
+                    <h2 class="section-title">Tax & Discounts</h2>
+                    <div class="field-group">
+                        <div class="field">
+                            <label for="cgstPercent">CGST (%)</label>
+                            <input type="number" id="cgstPercent" min="0" step="0.01" value="9" />
+                        </div>
+                        <div class="field">
+                            <label for="sgstPercent">SGST (%)</label>
+                            <input type="number" id="sgstPercent" min="0" step="0.01" value="9" />
+                        </div>
+                        <div class="field">
+                            <label for="discountPercent">Discount (%)</label>
+                            <input type="number" id="discountPercent" min="0" step="0.01" value="0" />
+                        </div>
+                        <div class="field">
+                            <label for="serviceChargePercent">Service Charge (%)</label>
+                            <input type="number" id="serviceChargePercent" min="0" step="0.01" value="5" />
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="button-group">
+                    <button type="button" id="updateReceipt" class="primary">
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                        >
+                            <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38"></path>
+                        </svg>
+                        Update Receipt
+                    </button>
+                    <button type="button" id="printReceipt" class="secondary">
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                        >
+                            <polyline points="6 9 6 2 18 2 18 9"></polyline>
+                            <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
+                            <rect x="6" y="14" width="12" height="8"></rect>
+                        </svg>
+                        Print Receipt
+                    </button>
+                    <button
+                        type="button"
+                        id="downloadPDF"
+                        class="secondary"
+                        style="background-color: #d946ef"
+                    >
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                        >
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                            <polyline points="7 10 12 15 17 10"></polyline>
+                            <line x1="12" y1="15" x2="12" y2="3"></line>
+                        </svg>
+                        Download PDF
+                    </button>
+                    <button type="button" id="clearForm" class="outline">
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                        >
+                            <polyline points="3 6 5 6 21 6"></polyline>
+                            <path
+                                d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"
+                            ></path>
+                            <line x1="10" y1="11" x2="10" y2="17"></line>
+                            <line x1="14" y1="11" x2="14" y2="17"></line>
+                        </svg>
+                        Clear Form
+                    </button>
+                </div>
+            </div>
+
+            <!-- Right Panel - Receipt Preview -->
+            <div class="preview-section">
+                <div class="receipt-header">
+                    <h2 class="section-title">Receipt Preview</h2>
+                    <div class="receipt-date">
+                        <span id="currentDate"></span> | <span id="currentTime"></span>
+                    </div>
+                </div>
+
+                <div id="receiptPreview" class="receipt-preview">
+                    <!-- Header -->
+                    <div class="receipt-header-content">
+                        <div class="receipt-hotel-name" id="preview-hotelName">ROYAL PALACE HOTEL</div>
+                        <div id="preview-address1">123 Luxury Avenue</div>
+                        <div id="preview-address2">Golden District, Mumbai</div>
+                        <div>Tel. No.: <span id="preview-contactNumber">791209</span></div>
+                        <div>Receipt No.: <span id="preview-receiptNumber"></span></div>
+                        <div>GST No.: <span id="preview-gstNumber">GST1234567890</span></div>
+                    </div>
+
+                    <!-- Customer Information -->
+                    <div class="receipt-section">
+                        <div class="receipt-info-line">
+                            <span>CUSTOMER NAME:</span> <span id="preview-customerName"></span>
+                        </div>
+                        <div class="receipt-info-line">
+                            <span>Date:</span> <span id="preview-billDate"></span>
+                        </div>
+                        <div class="receipt-info-line">
+                            <span>Time:</span> <span id="preview-billTime"></span>
+                        </div>
+                    </div>
+
+                    <!-- Items -->
+                    <div class="receipt-divider"></div>
+                    <div class="receipt-items-header">
+                        <div>ITEM</div>
+                        <div>QTY</div>
+                        <div>RATE</div>
+                        <div>AMOUNT</div>
+                    </div>
+                    <div class="receipt-divider"></div>
+
+                    <div id="preview-itemsList">
+                        <!-- Items will be added here -->
+                    </div>
+
+                    <div class="receipt-divider"></div>
+                    <div class="receipt-totals">
+                        <div class="receipt-info-line">
+                            <span>Subtotal:</span> <span id="preview-subtotal">₹ 0.00</span>
+                        </div>
+                        <div class="receipt-info-line">
+                            <span>Service Charge (<span id="preview-serviceChargePercent">5</span>%):</span>
+                            <span id="preview-serviceCharge">₹ 0.00</span>
+                        </div>
+                        <div class="receipt-info-line">
+                            <span>CGST (<span id="preview-cgstPercent">9</span>%):</span>
+                            <span id="preview-cgst">₹ 0.00</span>
+                        </div>
+                        <div class="receipt-info-line">
+                            <span>SGST (<span id="preview-sgstPercent">9</span>%):</span>
+                            <span id="preview-sgst">₹ 0.00</span>
+                        </div>
+                        <div class="receipt-info-line">
+                            <span>Discount (<span id="preview-discountPercent">0</span>%):</span>
+                            <span id="preview-discount">₹ 0.00</span>
+                        </div>
+                        <div class="receipt-info-line receipt-grand-total">
+                            <span>GRAND TOTAL:</span> <span id="preview-grandTotal">₹ 0.00</span>
+                        </div>
+                    </div>
+
+                    <div class="receipt-footer">
+                        <p>!! THANK YOU !!</p>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- jsPDF and html2canvas libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script>
+        // Receipt data object
+        const receipt = {
+            hotelName: "Royal Palace Hotel",
+            contactNumber: "791209",
+            addressLine1: "123 Luxury Avenue",
+            addressLine2: "Golden District, Mumbai",
+            gstNumber: "GST1234567890",
+            receiptNumber: "",
+            customerName: "",
+            date: "",
+            time: "",
+            items: [],
+            subtotal: 0,
+            serviceChargePercent: 5,
+            serviceCharge: 0,
+            cgstPercent: 9,
+            cgst: 0,
+            sgstPercent: 9,
+            sgst: 0,
+            discountPercent: 0,
+            discount: 0,
+            grandTotal: 0,
+        };
+
+        function formatCurrency(amount) {
+            return new Intl.NumberFormat("en-IN", {
+                style: "currency",
+                currency: "INR",
+                minimumFractionDigits: 2,
+            }).format(amount).replace("₹", "₹ ");
+        }
+
+        function formatDate(date) {
+            const d = typeof date === "string" ? new Date(date) : date;
+            const day = String(d.getDate()).padStart(2, "0");
+            const month = String(d.getMonth() + 1).padStart(2, "0");
+            const year = d.getFullYear();
+            return `${day}-${month}-${year}`;
+        }
+
+        function formatTime(date) {
+            const d = typeof date === "string" ? new Date(date) : date;
+            const hours = String(d.getHours()).padStart(2, "0");
+            const minutes = String(d.getMinutes()).padStart(2, "0");
+            return `${hours}:${minutes}`;
+        }
+
+        function generateReceiptNumber() {
+            const date = new Date();
+            const year = date.getFullYear().toString().slice(-2);
+            const month = String(date.getMonth() + 1).padStart(2, "0");
+            const day = String(date.getDate()).padStart(2, "0");
+            const randomNum = Math.floor(1000 + Math.random() * 9000);
+            return `${year}${month}${day}-${randomNum}`;
+        }
+
+        function calculateTotals() {
+            receipt.subtotal = receipt.items.reduce((total, item) => total + item.amount, 0);
+            receipt.serviceCharge = (receipt.subtotal * receipt.serviceChargePercent) / 100;
+            const afterService = receipt.subtotal + receipt.serviceCharge;
+            receipt.cgst = (afterService * receipt.cgstPercent) / 100;
+            receipt.sgst = (afterService * receipt.sgstPercent) / 100;
+            receipt.discount = (receipt.subtotal * receipt.discountPercent) / 100;
+            receipt.grandTotal = afterService + receipt.cgst + receipt.sgst - receipt.discount;
+
+            document.getElementById("preview-subtotal").textContent = formatCurrency(receipt.subtotal);
+            document.getElementById("preview-serviceCharge").textContent = formatCurrency(receipt.serviceCharge);
+            document.getElementById("preview-cgst").textContent = formatCurrency(receipt.cgst);
+            document.getElementById("preview-sgst").textContent = formatCurrency(receipt.sgst);
+            document.getElementById("preview-discount").textContent = formatCurrency(receipt.discount);
+            document.getElementById("preview-grandTotal").textContent = formatCurrency(receipt.grandTotal);
+
+            document.getElementById("preview-serviceChargePercent").textContent = receipt.serviceChargePercent;
+            document.getElementById("preview-cgstPercent").textContent = receipt.cgstPercent;
+            document.getElementById("preview-sgstPercent").textContent = receipt.sgstPercent;
+            document.getElementById("preview-discountPercent").textContent = receipt.discountPercent;
+        }
+
+        function getCurrentDateTime() {
+            const now = new Date();
+            return {
+                date: formatDate(now),
+                time: formatTime(now),
+            };
+        }
+
+        function initDateTime() {
+            const { date, time } = getCurrentDateTime();
+            receipt.date = date;
+            receipt.time = time;
+            document.getElementById("currentDate").textContent = date;
+            document.getElementById("currentTime").textContent = time;
+            document.getElementById("preview-billDate").textContent = date;
+            document.getElementById("preview-billTime").textContent = time;
+        }
+
+        function initReceiptNumber() {
+            receipt.receiptNumber = generateReceiptNumber();
+            document.getElementById("receiptNumber").value = receipt.receiptNumber;
+            document.getElementById("preview-receiptNumber").textContent = receipt.receiptNumber;
+        }
+
+        function addItemRow(item = { name: "", quantity: 1, price: 0, amount: 0 }) {
+            const itemsList = document.getElementById("itemsList");
+            const index = receipt.items.length;
+
+            const itemRow = document.createElement("div");
+            itemRow.className = "item-row";
+            itemRow.innerHTML = `
+                <div class="field item-name">
+                    <label for="item-name-${index}">Item</label>
+                    <input type="text" id="item-name-${index}" class="item-name-input" value="${item.name}" data-index="${index}">
+                </div>
+                <div class="field item-qty">
+                    <label for="item-qty-${index}">Qty</label>
+                    <input type="number" id="item-qty-${index}" class="item-qty-input" value="${item.quantity}" min="1" data-index="${index}">
+                </div>
+                <div class="field item-price">
+                    <label for="item-price-${index}">Price (₹)</label>
+                    <input type="number" id="item-price-${index}" class="item-price-input" value="${item.price}" data-index="${index}">
+                </div>
+                <div class="field item-amount">
+                    <label for="item-amount-${index}">Amount (₹)</label>
+                    <input type="text" id="item-amount-${index}" class="item-amount-input" value="${item.amount.toFixed(2)}" readonly data-index="${index}">
+                </div>
+                <button type="button" class="delete delete-item" data-index="${index}" title="Delete Item">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="18" height="18">
+                        <polyline points="3 6 5 6 21 6"></polyline>
+                        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                        <line x1="10" y1="11" x2="10" y2="17"></line>
+                        <line x1="14" y1="11" x2="14" y2="17"></line>
+                    </svg>
+                </button>
+            `;
+
+            itemsList.appendChild(itemRow);
+
+            const nameInput = itemRow.querySelector(".item-name-input");
+            const qtyInput = itemRow.querySelector(".item-qty-input");
+            const priceInput = itemRow.querySelector(".item-price-input");
+            const deleteBtn = itemRow.querySelector(".delete-item");
+
+            nameInput.addEventListener("input", (e) => {
+                const idx = parseInt(e.target.dataset.index);
+                receipt.items[idx].name = e.target.value;
+                updateItemsPreview();
+            });
+
+            qtyInput.addEventListener("input", (e) => {
+                const idx = parseInt(e.target.dataset.index);
+                const quantity = parseFloat(e.target.value) || 0;
+                receipt.items[idx].quantity = quantity;
+                receipt.items[idx].amount = quantity * receipt.items[idx].price;
+                document.getElementById(`item-amount-${idx}`).value = receipt.items[idx].amount.toFixed(2);
+                updateItemsPreview();
+                calculateTotals();
+            });
+
+            priceInput.addEventListener("input", (e) => {
+                const idx = parseInt(e.target.dataset.index);
+                const price = parseFloat(e.target.value) || 0;
+                receipt.items[idx].price = price;
+                receipt.items[idx].amount = receipt.items[idx].quantity * price;
+                document.getElementById(`item-amount-${idx}`).value = receipt.items[idx].amount.toFixed(2);
+                updateItemsPreview();
+                calculateTotals();
+            });
+
+            deleteBtn.addEventListener("click", (e) => {
+                const idx = parseInt(e.target.closest(".delete-item").dataset.index);
+                receipt.items.splice(idx, 1);
+                renderItems();
+                updateItemsPreview();
+                calculateTotals();
+            });
+
+            receipt.items.push(item);
+        }
+
+        function renderItems() {
+            const itemsList = document.getElementById("itemsList");
+            itemsList.innerHTML = "";
+            receipt.items.forEach((item, idx) => {
+                addItemRow(item);
+            });
+        }
+
+        function updateItemsPreview() {
+            const itemsList = document.getElementById("preview-itemsList");
+            itemsList.innerHTML = "";
+            receipt.items.forEach(item => {
+                const el = document.createElement("div");
+                el.className = "receipt-item";
+                el.innerHTML = `
+                    <div>${item.name}</div>
+                    <div>${item.quantity}</div>
+                    <div>${item.price.toFixed(2)}</div>
+                    <div>${item.amount.toFixed(2)}</div>
+                `;
+                itemsList.appendChild(el);
+            });
+        }
+
+        function initForm() {
+            document.getElementById("hotelName").addEventListener("input", (e) => {
+                receipt.hotelName = e.target.value;
+                document.getElementById("preview-hotelName").textContent = e.target.value.toUpperCase();
+            });
+
+            document.getElementById("contactNumber").addEventListener("input", (e) => {
+                receipt.contactNumber = e.target.value;
+                document.getElementById("preview-contactNumber").textContent = e.target.value;
+                document.getElementById("preview-footer-contact").textContent = e.target.value;
+            });
+
+            document.getElementById("addressLine1").addEventListener("input", (e) => {
+                receipt.addressLine1 = e.target.value;
+                document.getElementById("preview-address1").textContent = e.target.value;
+            });
+
+            document.getElementById("addressLine2").addEventListener("input", (e) => {
+                receipt.addressLine2 = e.target.value;
+                document.getElementById("preview-address2").textContent = e.target.value;
+            });
+
+            document.getElementById("gstNumber").addEventListener("input", (e) => {
+                receipt.gstNumber = e.target.value;
+                document.getElementById("preview-gstNumber").textContent = e.target.value;
+            });
+
+            document.getElementById("customerName").addEventListener("input", (e) => {
+                receipt.customerName = e.target.value;
+                document.getElementById("preview-customerName").textContent = e.target.value;
+            });
+
+            document.getElementById("cgstPercent").addEventListener("input", (e) => {
+                receipt.cgstPercent = parseFloat(e.target.value) || 0;
+                calculateTotals();
+            });
+
+            document.getElementById("sgstPercent").addEventListener("input", (e) => {
+                receipt.sgstPercent = parseFloat(e.target.value) || 0;
+                calculateTotals();
+            });
+
+            document.getElementById("discountPercent").addEventListener("input", (e) => {
+                receipt.discountPercent = parseFloat(e.target.value) || 0;
+                calculateTotals();
+            });
+
+            document.getElementById("serviceChargePercent").addEventListener("input", (e) => {
+                receipt.serviceChargePercent = parseFloat(e.target.value) || 0;
+                calculateTotals();
+            });
+
+            document.getElementById("addItem").addEventListener("click", () => {
+                addItemRow();
+                updateItemsPreview();
+                calculateTotals();
+            });
+
+            document.getElementById("updateReceipt").addEventListener("click", () => {
+                if (!receipt.hotelName || !receipt.receiptNumber || !receipt.customerName) {
+                    alert("Please fill all required fields (Hotel Name, Receipt Number, Customer Name)");
+                    return;
+                }
+                if (receipt.items.length === 0) {
+                    alert("Please add at least one item");
+                    return;
+                }
+
+                const now = new Date();
+                receipt.date = formatDate(now);
+                receipt.time = formatTime(now);
+                document.getElementById("currentDate").textContent = receipt.date;
+                document.getElementById("currentTime").textContent = receipt.time;
+                document.getElementById("preview-billDate").textContent = receipt.date;
+                document.getElementById("preview-billTime").textContent = receipt.time;
+
+                calculateTotals();
+
+                alert("Receipt updated successfully!");
+            });
+
+            document.getElementById("printReceipt").addEventListener("click", () => {
+                window.print();
+            });
+
+            document.getElementById("downloadPDF").addEventListener("click", () => {
+                if (!receipt.hotelName || !receipt.receiptNumber || !receipt.customerName) {
+                    alert("Please fill all required fields (Hotel Name, Receipt Number, Customer Name)");
+                    return;
+                }
+                if (receipt.items.length === 0) {
+                    alert("Please add at least one item");
+                    return;
+                }
+
+                const now = new Date();
+                receipt.date = formatDate(now);
+                receipt.time = formatTime(now);
+                document.getElementById("currentDate").textContent = receipt.date;
+                document.getElementById("currentTime").textContent = receipt.time;
+                document.getElementById("preview-billDate").textContent = receipt.date;
+                document.getElementById("preview-billTime").textContent = receipt.time;
+
+                calculateTotals();
+
+                const { jsPDF } = window.jspdf;
+                const receiptElement = document.getElementById("receiptPreview");
+
+                const loadingMsg = document.createElement("div");
+                loadingMsg.style.position = "fixed";
+                loadingMsg.style.top = "50%";
+                loadingMsg.style.left = "50%";
+                loadingMsg.style.transform = "translate(-50%, -50%)";
+                loadingMsg.style.padding = "15px 20px";
+                loadingMsg.style.backgroundColor = "rgba(0,0,0,0.7)";
+                loadingMsg.style.color = "white";
+                loadingMsg.style.borderRadius = "5px";
+                loadingMsg.style.zIndex = "9999";
+                loadingMsg.textContent = "Creating PDF...";
+                document.body.appendChild(loadingMsg);
+
+                setTimeout(() => {
+                    html2canvas(receiptElement, {
+                        scale: 2,
+                        logging: false,
+                        useCORS: true,
+                        backgroundColor: "#ffffff"
+                    }).then(canvas => {
+                        document.body.removeChild(loadingMsg);
+
+                        const imgData = canvas.toDataURL("image/jpeg", 1.0);
+                        const pdf = new jsPDF({
+                            orientation: "portrait",
+                            unit: "mm",
+                            format: [80, (canvas.height * 80) / canvas.width]
+                        });
+
+                        pdf.addImage(imgData, "JPEG", 0, 0, 80, (canvas.height * 80) / canvas.width);
+
+                        const fileName = `Receipt-${receipt.receiptNumber}.pdf`;
+                        pdf.save(fileName);
+
+                        // Open the PDF in a new browser tab if supported (mobile browsers may behave differently)
+                        const pdfBlob = pdf.output('blob');
+                        const url = URL.createObjectURL(pdfBlob);
+                        window.open(url, '_blank');
+
+                        alert(`Receipt saved as ${fileName}`);
+                    }).catch(err => {
+                        document.body.removeChild(loadingMsg);
+                        console.error("Error generating PDF", err);
+                        alert("Error generating PDF. Please try again.");
+                    });
+                }, 100);
+            });
+
+            document.getElementById("clearForm").addEventListener("click", () => {
+                resetForm();
+            });
+        }
+
+        function resetForm() {
+            const { date, time } = getCurrentDateTime();
+
+            receipt.hotelName = "Royal Palace Hotel";
+            receipt.contactNumber = "791209";
+            receipt.addressLine1 = "123 Luxury Avenue";
+            receipt.addressLine2 = "Golden District, Mumbai";
+            receipt.gstNumber = "GST1234567890";
+            receipt.receiptNumber = generateReceiptNumber();
+            receipt.customerName = "";
+            receipt.date = date;
+            receipt.time = time;
+            receipt.items = [];
+            receipt.subtotal = 0;
+            receipt.serviceChargePercent = 5;
+            receipt.serviceCharge = 0;
+            receipt.cgstPercent = 9;
+            receipt.cgst = 0;
+            receipt.sgstPercent = 9;
+            receipt.sgst = 0;
+            receipt.discountPercent = 0;
+            receipt.discount = 0;
+            receipt.grandTotal = 0;
+
+            document.getElementById("hotelName").value = receipt.hotelName;
+            document.getElementById("contactNumber").value = receipt.contactNumber;
+            document.getElementById("addressLine1").value = receipt.addressLine1;
+            document.getElementById("addressLine2").value = receipt.addressLine2;
+            document.getElementById("gstNumber").value = receipt.gstNumber;
+            document.getElementById("receiptNumber").value = receipt.receiptNumber;
+            document.getElementById("customerName").value = "";
+            document.getElementById("cgstPercent").value = "9";
+            document.getElementById("sgstPercent").value = "9";
+            document.getElementById("discountPercent").value = "0";
+            document.getElementById("serviceChargePercent").value = "5";
+
+            document.getElementById("itemsList").innerHTML = "";
+            addItemRow();
+
+            document.getElementById("preview-hotelName").textContent = receipt.hotelName.toUpperCase();
+            document.getElementById("preview-contactNumber").textContent = receipt.contactNumber;
+            document.getElementById("preview-footer-contact").textContent = receipt.contactNumber;
+            document.getElementById("preview-address1").textContent = receipt.addressLine1;
+            document.getElementById("preview-address2").textContent = receipt.addressLine2;
+            document.getElementById("preview-gstNumber").textContent = receipt.gstNumber;
+            document.getElementById("preview-receiptNumber").textContent = receipt.receiptNumber;
+            document.getElementById("preview-customerName").textContent = "";
+            document.getElementById("currentDate").textContent = date;
+            document.getElementById("currentTime").textContent = time;
+            document.getElementById("preview-billDate").textContent = date;
+            document.getElementById("preview-billTime").textContent = time;
+
+            updateItemsPreview();
+            calculateTotals();
+        }
+
+        document.addEventListener("DOMContentLoaded", () => {
+            initDateTime();
+            initReceiptNumber();
+            initForm();
+            addItemRow();
+        });
+    </script>
+</body>
+</html>
